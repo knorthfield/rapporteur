@@ -1,7 +1,7 @@
 # App Store metadata
 
 ## Name (30)
-Rapporteur
+Rapporteur: Quick Issues
 
 ## Subtitle (30)
 Quick entry for GitHub issues
