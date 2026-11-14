@@ -31,7 +31,7 @@ struct CreatedIssue: Decodable, Equatable, Sendable {
 
 struct GitHubClient: Sendable {
     /// The client ID of the Rapporteur OAuth App. It is a public value. The device flow needs no secret.
-    static let clientID = "REPLACE_WITH_CLIENT_ID"
+    static let clientID = "Ov23liW3Pq3V6OyQNYWO"
 
     var session: URLSession = .shared
 
