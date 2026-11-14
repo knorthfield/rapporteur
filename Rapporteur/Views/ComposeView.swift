@@ -30,7 +30,10 @@ struct ComposeView: View {
             .opacity(isClearing ? 0 : 1)
             Spacer(minLength: 0)
             HStack {
-                Spacer()
+                if let repository = store.currentRepository, repository.canPush {
+                    LabelChips(labels: store.labels[repository.fullName] ?? [], selection: $selectedLabels)
+                }
+                Spacer(minLength: 0)
                 Button("Send", systemImage: "arrow.up", action: send)
                     .labelStyle(.iconOnly)
                     .fontWeight(.bold)
