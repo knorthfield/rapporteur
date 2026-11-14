@@ -8,7 +8,7 @@ struct RapporteurApp: App {
         WindowGroup {
             Group {
                 if store.isSignedIn {
-                    Text("Rapporteur")
+                    ComposeView()
                 } else {
                     SignInView()
                 }
