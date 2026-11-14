@@ -24,7 +24,7 @@ build_scheme() {
 install_and_launch() {
   local sim="$1" app="$2" bundle="$3"; shift 3
   xcrun simctl boot "$sim" 2>/dev/null || true
-  open -a Simulator
+  open -a "$DEVELOPER_DIR/../Applications/DeviceHub.app"
   xcrun simctl install "$sim" "$app"
   xcrun simctl launch "$sim" "$bundle" "$@"
 }
