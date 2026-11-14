@@ -1,39 +1,97 @@
 {
-  "fill" : {
-    "linear-gradient" : [
-      "srgb:0.25000,0.73000,0.31000,1.00000",
-      "srgb:0.08000,0.45000,0.20000,1.00000"
+  "fill": {
+    "linear-gradient": [
+      "srgb:0.16000,0.80000,0.40000,1.00000",
+      "srgb:0.00000,0.33000,0.21000,1.00000"
     ]
   },
-  "groups" : [
+  "groups": [
     {
-      "layers" : [
+      "layers": [
         {
-          "glass" : true,
-          "image-name" : "issue.svg",
-          "name" : "issue",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
+          "glass": true,
+          "image-name": "dot.svg",
+          "name": "dot",
+          "opacity": 1,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
               0,
               0
             ]
           }
         }
       ],
-      "name" : "issue",
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "lighting": "individual",
+      "name": "dot",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+      "specular": true,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "layers": [
+        {
+          "glass": true,
+          "image-name": "ring.svg",
+          "name": "ring",
+          "opacity": 1,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting": "individual",
+      "name": "ring",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.35
+      }
+    },
+    {
+      "layers": [
+        {
+          "glass": true,
+          "image-name": "plate.svg",
+          "name": "plate",
+          "opacity": 0.35,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting": "individual",
+      "name": "plate",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.3
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.85
       }
     }
   ],
-  "supported-platforms" : {
-    "squares" : "shared"
+  "supported-platforms": {
+    "squares": "shared"
   }
 }
