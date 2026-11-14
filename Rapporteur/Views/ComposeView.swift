@@ -12,6 +12,7 @@ struct ComposeView: View {
     @State private var selectedLabels: Set<String> = []
     @State private var sentCount = 0
     @State private var isClearing = false
+    @State private var showsSettings = false
     @FocusState private var focus: Field?
 
     var body: some View {
@@ -48,7 +49,13 @@ struct ComposeView: View {
         .simultaneousGesture(repositorySwipe)
         .sensoryFeedback(.success, trigger: sentCount)
         .onAppear { focus = .title }
-        .onChange(of: store.currentRepository) { selectedLabels = [] }
+        .onChange(of: store.currentRepository) {
+            let names = store.currentRepository.flatMap { store.labels[$0.fullName] }?.map(\.name) ?? []
+            selectedLabels.formIntersection(names)
+        }
+        .sheet(isPresented: $showsSettings, onDismiss: { focus = .title }) {
+            SettingsView(edit: edit)
+        }
         .onChange(of: scenePhase) {
             if scenePhase == .active { Task { await store.sendOutbox() } }
         }
@@ -61,18 +68,23 @@ struct ComposeView: View {
 
     private var header: some View {
         HStack {
-            Menu {
-                ForEach(store.favourites) { repository in
-                    Button(repository.fullName) { store.select(repository) }
+            if let current = store.currentRepository {
+                Menu {
+                    ForEach(store.favourites) { repository in
+                        Button(repository.fullName) { store.select(repository) }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(current.fullName)
+                            .font(.headline)
+                            .lineLimit(1)
+                        Image(systemName: "chevron.down")
+                            .font(.caption.bold())
+                    }
                 }
-            } label: {
-                HStack(spacing: 4) {
-                    Text(store.currentRepository?.fullName ?? "No repository")
-                        .font(.headline)
-                        .lineLimit(1)
-                    Image(systemName: "chevron.down")
-                        .font(.caption.bold())
-                }
+            } else {
+                Button("Add a repository") { showsSettings = true }
+                    .font(.headline)
             }
             if let issue = store.lastCreatedIssue {
                 Link("#\(issue.number) created", destination: issue.htmlUrl)
@@ -88,6 +100,8 @@ struct ComposeView: View {
                     .background(.quaternary, in: .capsule)
                     .accessibilityLabel("\(store.outbox.count) in the outbox")
             }
+            Button("Settings", systemImage: "gearshape") { showsSettings = true }
+                .labelStyle(.iconOnly)
         }
     }
 
@@ -105,6 +119,17 @@ struct ComposeView: View {
 
     private var canSend: Bool {
         store.currentRepository != nil && !trimmedTitle.isEmpty
+    }
+
+    private func edit(_ issue: PendingIssue) {
+        if let repository = store.favourites.first(where: { $0.fullName == issue.repositoryFullName }) {
+            store.select(repository)
+        }
+        title = issue.title
+        description = issue.body
+        selectedLabels = Set(issue.labels)
+        store.removeFromOutbox(issue)
+        showsSettings = false
     }
 
     private func send() {
