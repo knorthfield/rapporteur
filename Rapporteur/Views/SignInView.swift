@@ -54,15 +54,7 @@ struct SignInView: View {
         do {
             let code = try await client.requestDeviceCode()
             deviceCode = code
-            var interval = code.interval
-            while true {
-                try await Task.sleep(for: .seconds(interval))
-                switch try await client.pollForToken(deviceCode: code.deviceCode) {
-                case .token(let token): return store.signIn(token: token)
-                case .pending: break
-                case .slowDown: interval += 5
-                }
-            }
+            store.signIn(token: try await client.waitForToken(code))
         } catch is CancellationError {
         } catch GitHubError.signInFailed(let message) {
             deviceCode = nil

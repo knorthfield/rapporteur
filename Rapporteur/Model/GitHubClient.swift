@@ -63,6 +63,23 @@ struct GitHubClient: Sendable {
         }
     }
 
+    /// Polls until the user authorises the code on GitHub. A network problem does not stop the wait:
+    /// iOS breaks the connection while the user is in the browser.
+    func waitForToken(_ code: DeviceCode) async throws -> String {
+        var interval = code.interval
+        while true {
+            try await Task.sleep(for: .seconds(interval))
+            do {
+                switch try await pollForToken(deviceCode: code.deviceCode) {
+                case .token(let token): return token
+                case .pending: break
+                case .slowDown: interval += 5
+                }
+            } catch is URLError {
+            }
+        }
+    }
+
     // MARK: API
 
     /// The repositories the user can reach, most recently pushed first.

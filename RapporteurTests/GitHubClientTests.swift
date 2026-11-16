@@ -34,6 +34,17 @@ extension NetworkStubbed {
             }
         }
 
+        @Test func keepsWaitingForTheTokenAfterANetworkProblem() async throws {
+            let client = StubURLProtocol.client { _ in
+                if StubURLProtocol.requests.count == 1 { throw URLError(.networkConnectionLost) }
+                return (200, #"{"access_token":"gho_abc"}"#)
+            }
+            let code = DeviceCode(deviceCode: "dc", userCode: "WDJB-MJHT",
+                                  verificationUri: URL(string: "https://github.com/login/device")!, interval: 0)
+            #expect(try await client.waitForToken(code) == "gho_abc")
+            #expect(StubURLProtocol.requests.count == 2)
+        }
+
         @Test func readsRepositoriesWithPushPermission() async throws {
             let client = StubURLProtocol.client { _ in
                 (200, #"[{"full_name":"octo/app","private":true,"permissions":{"push":true}},{"full_name":"other/lib","private":false,"permissions":{"push":false}}]"#)
